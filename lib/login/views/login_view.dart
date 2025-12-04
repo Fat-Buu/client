@@ -34,59 +34,104 @@ class _LoginViewState extends ConsumerState<LoginView> {
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (loginViewModel.username.isNotEmpty)
-                  Text("Hi ${loginViewModel.username}"),
-                const SizedBox(height: 16),
-                Text("Login Form"),
-                TextField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    labelText: "username",
-                    hintText: "Jason",
-                    prefixIcon: Icon(Icons.cabin),
+            child: loginViewModel.when(
+              data: (user) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Icon(
+                        user.username.isNotEmpty ? Icons.verified_user : Icons
+                            .android_outlined,
+                        color: user.username.isNotEmpty ? Colors.green : Colors
+                            .grey,),
+                      const SizedBox(height: 8),
+                      Text(user.username.isNotEmpty
+                          ? "Hi ${user.username}"
+                          : "Hi Guest"),
+                      const SizedBox(height: 16),
+                      if (user.username.isEmpty) ...[
+                        Text("Login Form"),
+                        TextField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            labelText: "username",
+                            hintText: "Jason",
+                            prefixIcon: Icon(Icons.cabin),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            labelText: "password",
+                            prefixIcon: Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Ink(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [Colors.green, Colors.greenAccent],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.topRight),
+                              borderRadius: BorderRadius.circular(25)
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                String username = usernameController.text;
+                                String password = passwordController.text;
+                                setState(() {
+                                  usernameController.clear();
+                                  passwordController.clear();
+                                });
+                                ref
+                                    .read(loginViewModelProvider.notifier)
+                                    .login(username, password);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                              ),
+                              child: const Text("Login",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text("Register"),
+                      ] else
+                        ...[
+                          ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(loginViewModelProvider.notifier)
+                                  .logout();
+                            },
+                            child: Text("Log out"),
+                          ),
+                        ],
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: "password",
-                    prefixIcon: Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        _obscurePassword = !_obscurePassword;
-                      },
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    String username = usernameController.text;
-                    String password = passwordController.text;
-                    ref
-                        .read(loginViewModelProvider.notifier)
-                        .login(username, password);
-                    setState(() {
-                      usernameController.clear();
-                      passwordController.clear();
-                    });
-                  },
-                  child: const Text("Login"),
-                ),
-                const SizedBox(height: 8),
-                Text("Register"),
-              ],
+                );
+              },
+              error: (err, st) => Text('Error: $err'),
+              loading: () => CircularProgressIndicator(),
             ),
           ),
         ),
