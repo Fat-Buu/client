@@ -1,3 +1,4 @@
+import 'package:client/login/views/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -51,40 +52,20 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       const SizedBox(height: 16),
                       if (user.username.isEmpty) ...[
                         Text("Login Form"),
-                        TextField(
-                          controller: usernameController,
-                          decoration: const InputDecoration(
+                        TextFieldWidget(
                             labelText: "username",
-                            hintText: "Jason",
-                            prefixIcon: Icon(Icons.cabin),
-                          ),
-                        ),
+                            controller: usernameController,
+                            prefixIcon: Icon(Icons.sailing_outlined)),
                         const SizedBox(height: 16),
-                        TextField(
-                          controller: passwordController,
-                          obscureText: _obscurePassword,
-                          decoration: InputDecoration(
+                        TextFieldWidget(
                             labelText: "password",
-                            prefixIcon: Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                            ),
-                          ),
-                        ),
+                            controller: passwordController, obscure: true,
+                            prefixIcon: Icon(Icons.lock)),
                         const SizedBox(height: 24),
                         Ink(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                  colors: [Colors.green, Colors.greenAccent],
+                                  colors: [Colors.blue, Colors.greenAccent],
                                   begin: Alignment.topLeft,
                                   end: Alignment.topRight),
                               borderRadius: BorderRadius.circular(25)
