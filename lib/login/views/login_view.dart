@@ -1,3 +1,4 @@
+import 'package:client/login/viewmodels/providers/login_service_provider.dart';
 import 'package:client/login/views/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +15,6 @@ class LoginView extends ConsumerStatefulWidget {
 class _LoginViewState extends ConsumerState<LoginView> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -25,83 +25,58 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final loginViewModel = ref.watch(loginViewModelProvider);
+    final loginViewModel = ref.watch(
+        loginViewModelProvider(loginService: ref.read(loginServiceProvider)));
 
     return Scaffold(
       appBar: AppBar(
-        title: AppBar(title: const Text("Application 2 - Client")),
+        title: const Text("Application 2 - Client"),
       ),
       body: SafeArea(
         child: Center(
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: loginViewModel.when(
               data: (user) {
+                final isLoggedIn = user.username.isNotEmpty;
                 return SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
-                        user.username.isNotEmpty ? Icons.verified_user : Icons
+                          isLoggedIn ? Icons.verified_user : Icons
                             .android_outlined,
-                        color: user.username.isNotEmpty ? Colors.green : Colors
-                            .grey,),
+                          color: isLoggedIn ? Colors.green : Colors
+                              .grey,
+                          size: 50),
                       const SizedBox(height: 8),
-                      Text(user.username.isNotEmpty
+                      Text(isLoggedIn
                           ? "Hi ${user.username}"
-                          : "Hi Guest"),
+                          : "Hi Guest", style: const TextStyle(fontSize: 18),),
                       const SizedBox(height: 16),
-                      if (user.username.isEmpty) ...[
-                        Text("Login Form"),
+                      if (!isLoggedIn) ...[
+                        const Text("Login Form"),
+                        const SizedBox(height: 16),
                         TextFieldWidget(
                             labelText: "username",
                             controller: usernameController,
-                            prefixIcon: Icon(Icons.sailing_outlined)),
+                            prefixIcon: const Icon(Icons.sailing_outlined)),
                         const SizedBox(height: 16),
                         TextFieldWidget(
                             labelText: "password",
                             controller: passwordController, obscure: true,
-                            prefixIcon: Icon(Icons.lock)),
+                            prefixIcon: const Icon(Icons.lock)),
                         const SizedBox(height: 24),
-                        Ink(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [Colors.blue, Colors.greenAccent],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.topRight),
-                              borderRadius: BorderRadius.circular(25)
-                          ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                String username = usernameController.text;
-                                String password = passwordController.text;
-                                setState(() {
-                                  usernameController.clear();
-                                  passwordController.clear();
-                                });
-                                ref
-                                    .read(loginViewModelProvider.notifier)
-                                    .login(username, password);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                              ),
-                              child: const Text("Login",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),),
-                            ),
-                          ),
-                        ),
+                        _buildLoginButton(),
                         const SizedBox(height: 8),
-                        Text("Register"),
+                        const Text("Register"),
                       ] else
                         ...[
                           ElevatedButton(
                             onPressed: () {
                               ref
-                                  .read(loginViewModelProvider.notifier)
+                                  .read(loginViewModelProvider(loginService:
+                              ref.read(loginServiceProvider)).notifier)
                                   .logout();
                             },
                             child: Text("Log out"),
@@ -115,6 +90,42 @@ class _LoginViewState extends ConsumerState<LoginView> {
               loading: () => CircularProgressIndicator(),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return Ink(
+      decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              colors: [Colors.blue, Colors.greenAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.topRight),
+          borderRadius: BorderRadius.circular(25)
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            final username = usernameController.text.trim();
+            final password = passwordController.text.trim();
+            usernameController.clear();
+            passwordController.clear();
+            ref
+                .read(loginViewModelProvider(
+                loginService: ref.read(loginServiceProvider))
+                .notifier)
+                .login(username, password);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+          child: const Text("Login",
+            style: TextStyle(
+                color: Colors.white, fontSize: 18),),
         ),
       ),
     );

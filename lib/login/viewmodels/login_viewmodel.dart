@@ -1,44 +1,49 @@
 import 'package:client/login/models/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../core/database/database.dart';
 import '../services/login_service.dart';
 
 part 'login_viewmodel.g.dart';
 
 @riverpod
 class LoginViewModel extends _$LoginViewModel {
-  late LoginService _loginService;
+  late final LoginService _loginService;
 
   @override
-  Future<User> build() async {
-    _loginService = LoginService(Database());
-    return User(username: "", password: "");
+  Future<User> build({required LoginService loginService}) async {
+    _loginService = loginService;
+    return _emptyUser;
   }
 
   Future<void> login(String username, String password) async {
-    state = const AsyncValue.loading();
+    _setLoading();
     try {
       final result = await _loginService.login(username, password);
-      if (result) {
-        state = AsyncValue.data(User(username: username, password: password));
-      } else {
-        state = AsyncValue.data(User(username: "", password: ""));
-      }
+      _setUser(result ? User(username: username, password: password)
+          : _emptyUser);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      _setError(e, st);
     }
   }
 
   Future<void> logout() async {
-    state = const AsyncValue.loading();
+    _setLoading();
     try {
       await _loginService.logout();
-      state = AsyncValue.data(User(username: "", password: ""));
+      _setUser(_emptyUser);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      _setError(e, st);
     }
   }
+
+  // --- Utils ---
+  User get _emptyUser => User(username: "", password: "");
+
+  void _setLoading() => state = const AsyncValue.loading();
+
+  void _setUser(User user) => state = AsyncValue.data(user);
+
+  void _setError(Object e, StackTrace st) => state = AsyncValue.error(e, st);
 }
 
 // flutter pub run build_runner watch --delete-conflicting-outputs
