@@ -37,7 +37,12 @@ class LoginViewModel extends _$LoginViewModel {
 
   // --- Utils ---
   User get _emptyUser =>
-      User(id: '', userName: '', password: '', firstName: '', lastName: '');
+      User(id: '',
+          userName: '',
+          password: '',
+          firstName: '',
+          lastName: '',
+          profileImage: '');
 
   void _setLoading() => state = const AsyncValue.loading();
 

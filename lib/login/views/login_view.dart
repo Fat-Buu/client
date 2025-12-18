@@ -53,6 +53,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       Text(isLoggedIn
                           ? "Hi ${user.firstName} ${user.lastName}"
                           : "Hi Guest", style: const TextStyle(fontSize: 18),),
+                      if (isLoggedIn) ...[
+                        const SizedBox(height: 16),
+                        Image.asset(
+                            "assets/images/profiles/${user.profileImage}"),
+                      ],
                       const SizedBox(height: 16),
                       if (!isLoggedIn) ...[
                         const Text("Login Form"),

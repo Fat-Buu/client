@@ -4,7 +4,8 @@ class User{
   final String password;
   final String firstName;
   final String lastName;
+  final String profileImage;
 
   User(
-      {required this.id, required this.userName, required this.password, required this.firstName, required this.lastName});
+      {required this.id, required this.userName, required this.password, required this.firstName, required this.lastName, required this.profileImage});
 }
