@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import '../../login/models/user.dart';
 
 class Database {
@@ -14,8 +16,20 @@ class Database {
   }
 
   final List<User> _users = [
-    User(username: "john", password: "john"),
-    User(username: "jame", password: "jame"),
-    User(username: "mark", password: "mark3"),
+    User(id: Uuid().v1().toString(),
+        userName: "john",
+        password: "john",
+        firstName: "John",
+        lastName: "Dart"),
+    User(id: Uuid().v1().toString(),
+        userName: "jame",
+        password: "john",
+        firstName: "John",
+        lastName: "Dart"),
+    User(id: Uuid().v1().toString(),
+        userName: "max",
+        password: "john",
+        firstName: "John",
+        lastName: "Dart"),
   ];
 }

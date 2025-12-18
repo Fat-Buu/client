@@ -19,8 +19,7 @@ class LoginViewModel extends _$LoginViewModel {
     _setLoading();
     try {
       final result = await _loginService.login(username, password);
-      _setUser(result ? User(username: username, password: password)
-          : _emptyUser);
+      _setUser(result ?? _emptyUser);
     } catch (e, st) {
       _setError(e, st);
     }
@@ -37,7 +36,8 @@ class LoginViewModel extends _$LoginViewModel {
   }
 
   // --- Utils ---
-  User get _emptyUser => User(username: "", password: "");
+  User get _emptyUser =>
+      User(id: '', userName: '', password: '', firstName: '', lastName: '');
 
   void _setLoading() => state = const AsyncValue.loading();
 

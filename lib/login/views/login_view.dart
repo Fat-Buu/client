@@ -38,7 +38,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
             padding: const EdgeInsets.all(24.0),
             child: loginViewModel.when(
               data: (user) {
-                final isLoggedIn = user.username.isNotEmpty;
+                final isLoggedIn = user.userName.isNotEmpty;
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,7 +51,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           size: 50),
                       const SizedBox(height: 8),
                       Text(isLoggedIn
-                          ? "Hi ${user.username}"
+                          ? "Hi ${user.firstName} ${user.lastName}"
                           : "Hi Guest", style: const TextStyle(fontSize: 18),),
                       const SizedBox(height: 16),
                       if (!isLoggedIn) ...[
