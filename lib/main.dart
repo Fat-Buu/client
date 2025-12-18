@@ -1,3 +1,4 @@
+import 'package:client/feed/views/feed_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: LoginView(),
+      initialRoute: '/',
+      routes: {
+        "/": (context) => const LoginView(),
+        '/feed': (context) => const FeedView(),
+      },
     );
   }
 }

@@ -79,10 +79,26 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         ...[
                           ElevatedButton(
                             onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/feed',
+                                    (route) => false,
+                              );
+                            },
+                            child: Text("Go to feeds"),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
                               ref
                                   .read(loginViewModelProvider(loginService:
                               ref.read(loginServiceProvider)).notifier)
                                   .logout();
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/',
+                                    (route) => false,
+                              );
                             },
                             child: Text("Log out"),
                           ),
