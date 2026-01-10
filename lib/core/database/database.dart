@@ -40,5 +40,17 @@ class Database {
         firstName: "Ozzy",
         lastName: "Dart",
         profileImage: "4043278_avatar_male_ozzy_rock_singer_icon.png"),
+    User(id: Uuid().v1().toString(),
+        userName: "avatar_girl",
+        password: "avatar_girl",
+        firstName: "Girl",
+        lastName: "Dart",
+        profileImage: "avatar_girl.png"),
+    User(id: Uuid().v1().toString(),
+        userName: "boxing",
+        password: "boxing",
+        firstName: "Boxing",
+        lastName: "Dart",
+        profileImage: "boxing.png"),
   ];
 }
