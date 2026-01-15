@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../login/viewmodels/login_viewmodel.dart';
-import '../../login/viewmodels/providers/login_service_provider.dart';
+import '../../../login/viewmodels/login_viewmodel.dart';
+import '../../../login/viewmodels/providers/login_service_provider.dart';
 
 class FeedView extends ConsumerStatefulWidget {
   const FeedView({super.key});
@@ -42,7 +42,13 @@ class _FeedViewState extends ConsumerState<FeedView> {
           ),
         ],
       ),
-      body: SafeArea(child: Column(children: [buildLayoutProfile(loginState)])),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [buildLayoutProfile(loginState)],
+        ),
+      ),
     );
   }
 }
