@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../login/viewmodels/login_viewmodel.dart';
 import '../../../login/viewmodels/providers/login_service_provider.dart';
+import '../widget/profile_widget.dart';
 
 class FeedView extends ConsumerStatefulWidget {
   const FeedView({super.key});
@@ -46,25 +47,15 @@ class _FeedViewState extends ConsumerState<FeedView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [buildLayoutProfile(loginState)],
+          children: [
+            ProfileWidget(
+              firstName: loginState.value?.firstName ?? "",
+              lastName: loginState.value?.lastName ?? "",
+              profileImage: loginState.value?.profileImage ?? "",
+            ),
+          ],
         ),
       ),
     );
   }
-}
-
-Container buildLayoutProfile(loginState) {
-  return Container(
-    padding: EdgeInsets.all(10),
-    child: Row(
-      children: [
-        Image.asset(
-          "assets/images/profiles/${loginState.value?.profileImage}",
-          width: 75,
-        ),
-        const SizedBox(width: 16),
-        Text("Hi ${loginState.value?.firstName} ${loginState.value?.lastName}"),
-      ],
-    ),
-  );
 }
