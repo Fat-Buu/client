@@ -1,3 +1,5 @@
+import 'package:client/feed/views/widget/suggest_friend.dart';
+import 'package:client/feed/views/widget/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,24 +38,41 @@ class _FeedViewState extends ConsumerState<FeedView> {
         title: const Text("Application 2 - Client"),
         actions: [
           IconButton(
+            icon: const Icon(Icons.chat),
+            onPressed: () {
+              const snackBar = SnackBar(content: TextWidget(txt: "Chat"));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              const snackBar = SnackBar(content: TextWidget(txt: "Logout"));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
               ref.read(loginProvider.notifier).logout();
             },
           ),
         ],
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ProfileWidget(
-              firstName: loginState.value?.firstName ?? "",
-              lastName: loginState.value?.lastName ?? "",
-              profileImage: loginState.value?.profileImage ?? "",
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ProfileWidget(
+                firstName: loginState.value?.firstName ?? "",
+                lastName: loginState.value?.lastName ?? "",
+                profileImage: loginState.value?.profileImage ?? "",
+              ),
+              SizedBox(height: 8),
+              TextWidget(txt: "Suggest Friends"),
+              SuggestFriend(),
+              SizedBox(height: 8),
+              TextWidget(txt: "Feeds"),
+              Placeholder(),
+            ],
+          ),
         ),
       ),
     );
