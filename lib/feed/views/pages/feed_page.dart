@@ -1,20 +1,19 @@
+import 'package:client/feed/views/widget/profile_widget.dart';
 import 'package:client/feed/views/widget/suggest_friend.dart';
 import 'package:client/feed/views/widget/text_widget.dart';
+import 'package:client/login/viewmodels/login_viewmodel.dart';
+import 'package:client/login/viewmodels/providers/login_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../login/viewmodels/login_viewmodel.dart';
-import '../../../login/viewmodels/providers/login_service_provider.dart';
-import '../widget/profile_widget.dart';
-
-class FeedView extends ConsumerStatefulWidget {
-  const FeedView({super.key});
+class FeedPage extends ConsumerStatefulWidget {
+  const FeedPage({super.key});
 
   @override
-  ConsumerState<FeedView> createState() => _FeedViewState();
+  ConsumerState<FeedPage> createState() => _FeedViewState();
 }
 
-class _FeedViewState extends ConsumerState<FeedView> {
+class _FeedViewState extends ConsumerState<FeedPage> {
   @override
   Widget build(BuildContext context) {
     final loginProvider = loginViewModelProvider(

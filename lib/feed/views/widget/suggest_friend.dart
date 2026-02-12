@@ -14,19 +14,45 @@ class _SuggestFriendState extends State<SuggestFriend> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          for (var i in [1, 2, 3, 4, 5])
-            Card(
-              margin: EdgeInsets.all(5),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/images/profiles/samurai_man.png",
-                      width: 75,
-                    ),
-                    Text("Samurai Man"),
-                  ],
+          for (var _ in [1, 2, 3, 4, 5])
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Information"),
+                      content: Container(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/profiles/samurai_man.png",
+                            ),
+                            SizedBox(height: 8),
+                            Text("Samurai Man"),
+                          ],
+                        ),
+                      ),
+                      actions: [],
+                    );
+                  },
+                );
+              },
+              child: Card(
+                margin: EdgeInsets.all(5),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/images/profiles/samurai_man.png",
+                        width: 75,
+                      ),
+                      Text("Samurai Man"),
+                    ],
+                  ),
                 ),
               ),
             ),
