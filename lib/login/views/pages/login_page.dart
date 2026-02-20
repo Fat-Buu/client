@@ -1,9 +1,12 @@
 import 'package:client/login/models/login_type_enum.dart';
 import 'package:client/login/viewmodels/login_viewmodel.dart';
 import 'package:client/login/views/widgets/button_login_widget.dart';
+import 'package:client/login/views/widgets/header_section_widget.dart';
 import 'package:client/login/views/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../widgets/profile_section_widget.dart' show ProfileSectionWidget;
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -39,26 +42,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: state.when(
-            data: (user) {
-              final isLoggedIn = user.userName.isNotEmpty;
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          child: SingleChildScrollView(
+            child: state.when(
+              error: (err, st) => Text('Error: $err'),
+              loading: () => CircularProgressIndicator(),
+              data: (user) {
+                final isLoggedIn = user.userName.isNotEmpty;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      isLoggedIn ? Icons.verified_user : Icons.android_outlined,
-                      color: isLoggedIn ? Colors.green : Colors.grey,
-                      size: 50,
+                    HeaderSectionWidget(
+                      isLoggedIn: isLoggedIn,
+                      name: user.userName,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      isLoggedIn
-                          ? "Hi ${user.firstName} ${user.lastName}"
-                          : "Hi Guest",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 16),
                     if (!isLoggedIn) ...[
                       const Text("Login Form"),
                       const SizedBox(height: 16),
@@ -106,39 +102,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(height: 8),
                       const Text("Register"),
                     ] else ...[
-                      const SizedBox(height: 16),
-                      Image.asset(
-                        "assets/images/profiles/${user.profileImage}",
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/feed',
-                            (route) => false,
-                          );
-                        },
-                        child: Text("Go to feeds"),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
+                      ProfileSectionWidget(
+                        profileImage: user.profileImage,
+                        onLogout: () {
                           ref.read(loginViewModelProvider.notifier).logout();
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/',
-                            (route) => false,
-                          );
+                          Navigator.pushReplacementNamed(context, '/');
                         },
-                        child: Text("Log out"),
+                        onGoToFeeds: () {
+                          Navigator.pushReplacementNamed(context, '/feed');
+                        },
                       ),
                     ],
                   ],
-                ),
-              );
-            },
-            error: (err, st) => Text('Error: $err'),
-            loading: () => CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
         ),
       ),
