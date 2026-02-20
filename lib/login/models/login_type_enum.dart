@@ -1,0 +1,1 @@
+enum LoginTypeEnum { flutter, java }

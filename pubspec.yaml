@@ -38,6 +38,7 @@ dependencies:
   riverpod_annotation: ^3.0.3
   uuid: ^4.4.2
   logger: ^2.6.2
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

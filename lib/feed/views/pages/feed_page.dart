@@ -2,7 +2,6 @@ import 'package:client/feed/views/widget/profile_widget.dart';
 import 'package:client/feed/views/widget/suggest_friend.dart';
 import 'package:client/feed/views/widget/text_widget.dart';
 import 'package:client/login/viewmodels/login_viewmodel.dart';
-import 'package:client/login/viewmodels/providers/login_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,9 +15,7 @@ class FeedPage extends ConsumerStatefulWidget {
 class _FeedViewState extends ConsumerState<FeedPage> {
   @override
   Widget build(BuildContext context) {
-    final loginProvider = loginViewModelProvider(
-      loginService: ref.read(loginServiceProvider),
-    );
+    final loginProvider = loginViewModelProvider;
     // Auth guard
     ref.listen(loginProvider, (previous, next) {
       next.whenOrNull(

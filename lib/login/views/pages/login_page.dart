@@ -1,5 +1,5 @@
+import 'package:client/login/models/login_type_enum.dart';
 import 'package:client/login/viewmodels/login_viewmodel.dart';
-import 'package:client/login/viewmodels/providers/login_service_provider.dart';
 import 'package:client/login/views/widgets/button_login_widget.dart';
 import 'package:client/login/views/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,31 +23,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  void _login(LoginTypeEnum type) {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+    if (username.isEmpty || password.isEmpty) return;
+    ref.read(loginViewModelProvider.notifier).login(username, password, type);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final loginViewModel = ref.watch(
-      loginViewModelProvider(loginService: ref.read(loginServiceProvider)),
-    );
-
-    void loginWithFlutter() {
-      final username = usernameController.text.trim();
-      final password = passwordController.text.trim();
-      usernameController.clear();
-      passwordController.clear();
-      ref
-          .read(
-            loginViewModelProvider(
-              loginService: ref.read(loginServiceProvider),
-            ).notifier,
-          )
-          .login(username, password);
-    }
+    final state = ref.watch(loginViewModelProvider);
+    final isLoading = state.isLoading;
 
     return SafeArea(
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: loginViewModel.when(
+          child: state.when(
             data: (user) {
               final isLoggedIn = user.userName.isNotEmpty;
               return SingleChildScrollView(
@@ -66,12 +58,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           : "Hi Guest",
                       style: const TextStyle(fontSize: 18),
                     ),
-                    if (isLoggedIn) ...[
-                      const SizedBox(height: 16),
-                      Image.asset(
-                        "assets/images/profiles/${user.profileImage}",
-                      ),
-                    ],
                     const SizedBox(height: 16),
                     if (!isLoggedIn) ...[
                       const Text("Login Form"),
@@ -91,12 +77,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(height: 24),
                       ButtonLoginWidget(
                         labelText: 'Login with Flutter',
-                        callBack: loginWithFlutter,
+                        isLoading: isLoading,
+                        onPressed: isLoading
+                            ? null
+                            : () => _login(LoginTypeEnum.flutter),
                       ),
                       const SizedBox(height: 8),
                       ButtonLoginWidget(
                         labelText: 'Login with Java',
-                        callBack: null,
+                        isLoading: isLoading,
+                        onPressed: isLoading
+                            ? null
+                            : () => _login(LoginTypeEnum.java),
+                        gradientColors: [
+                          Colors.greenAccent,
+                          Colors.lightGreenAccent,
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ButtonLoginWidget(
+                        labelText: 'Login with Python',
+                        onPressed: null,
                         gradientColors: [
                           Colors.greenAccent,
                           Colors.lightGreenAccent,
@@ -105,6 +106,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(height: 8),
                       const Text("Register"),
                     ] else ...[
+                      const SizedBox(height: 16),
+                      Image.asset(
+                        "assets/images/profiles/${user.profileImage}",
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamedAndRemoveUntil(
@@ -118,13 +123,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          ref
-                              .read(
-                                loginViewModelProvider(
-                                  loginService: ref.read(loginServiceProvider),
-                                ).notifier,
-                              )
-                              .logout();
+                          ref.read(loginViewModelProvider.notifier).logout();
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/',
